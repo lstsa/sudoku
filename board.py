@@ -1,3 +1,9 @@
+import random
+from datetime import date
+
+today = date.today()
+random.seed(str(today))
+
 def criar_board():
     board =[]
     line = []
@@ -47,13 +53,16 @@ def resolver(board):
     for i in range(9):
         for j in range(9):
             if board[i][j] == 0:
-                for numero in range(1, 10):
+                numeros = list(range(1, 10))
+                random.shuffle(numeros)
+                for numero in numeros:
                     if jogada_valida(board, i, j, numero):
                         board[i][j] = numero
                         if resolver(board):
                             return True
                         board[i][j] = 0
-                return False    
+                return False
+    return True    
             
             
 

@@ -4,6 +4,12 @@ from datetime import date
 today = date.today()
 random.seed(str(today))
 
+dificuldades = {
+    "facil": 46,
+    "medio": 51,
+    "dificil": 56
+}
+
 def criar_board():
     board =[]
     line = []
@@ -62,10 +68,23 @@ def resolver(board):
                             return True
                         board[i][j] = 0
                 return False
-    return True    
+    return True   
+
+def gerar_puzzle(board, dificuldade):
+    numero_de_celulas_a_remover = dificuldades[dificuldade]
+    todas_as_celulas = [(i, j) for i in range(9) for j in range(9)]
+    celulas_a_remover = random.sample(todas_as_celulas, numero_de_celulas_a_remover)
+    for i, j in celulas_a_remover:
+        board[i][j] = 0
+                
+            
+    
+    
+     
             
             
 
-board = criar_board()
-resolver(board)
-exibir_board(board)
+board1 = criar_board()
+resolver(board1)
+gerar_puzzle(board1, "dificil")
+exibir_board(board1)

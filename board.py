@@ -40,6 +40,23 @@ def jogada_valida(board,linha, coluna, numero):
     return (valida_linha(board, linha, numero) and
             valida_coluna(board, coluna, numero) and
             valida_quadrante(board, linha, coluna, numero))
+    
+def resolver(board):
+    if not any(0 in row for row in board):
+        return True
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] == 0:
+                for numero in range(1, 10):
+                    if jogada_valida(board, i, j, numero):
+                        board[i][j] = numero
+                        if resolver(board):
+                            return True
+                        board[i][j] = 0
+                return False    
+            
+            
 
 board = criar_board()
+resolver(board)
 exibir_board(board)

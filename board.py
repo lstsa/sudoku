@@ -1,15 +1,9 @@
 import random
 from datetime import date
+from validator import jogada_valida
 
 today = date.today()
 random.seed(str(today))
-
-dificuldades = {
-    "facil": 46,
-    "medio": 51,
-    "dificil": 56
-}
-
 
 def criar_board():
     board =[]
@@ -32,28 +26,7 @@ def exibir_board(board):
                 print("|", end=" ")
             print(column, end=" ")
         print()
-        
-def valida_linha(board, linha, numero):
-    return numero not in board[linha]
-
-def valida_coluna(board, coluna, numero):
-    col = [board[i][coluna] for i in range(9)]
-    return numero not in col
-
-def valida_quadrante(board, linha, coluna, numero):
-    start_row = (linha // 3) * 3
-    start_col = (coluna // 3) * 3
-    for i in range(3):
-        for j in range(3):
-            if board[start_row + i][start_col + j] == numero:
-                return False
-    return True
-
-def jogada_valida(board,linha, coluna, numero):
-    return (valida_linha(board, linha, numero) and
-            valida_coluna(board, coluna, numero) and
-            valida_quadrante(board, linha, coluna, numero))
-    
+          
 def resolver(board):
     if not any(0 in row for row in board):
         return True
@@ -70,61 +43,4 @@ def resolver(board):
                         board[i][j] = 0
                 return False
     return True   
-
-def gerar_puzzle(board, dificuldade):
-    resolver(board)
-    numero_de_celulas_a_remover = dificuldades[dificuldade]
-    todas_as_celulas = [(i, j) for i in range(9) for j in range(9)]
-    celulas_a_remover = random.sample(todas_as_celulas, numero_de_celulas_a_remover)
-    celulas_imutaveis = list(set(todas_as_celulas) - set(celulas_a_remover))
-    for i, j in celulas_a_remover:
-        board[i][j] = 0
-    return celulas_imutaveis
-
-def obter_jogada(celulas_imutaveis):
-    while True:
-        print("Digite sua jogada no formato -> LinhaColunaDigito ex: 111")
-        resposta = input("Resposta: ")
         
-        if len(resposta) != 3:
-            print("Sua resposta tem mais de 3 digitos.")
-            continue
-        
-        if not resposta.isdigit():
-            print("Sua resposta contém caracteres inválidos.")
-            continue
-        
-        if any(x not in range(1, 10) for x in map(int, resposta)):
-            print("Sua resposta contém números inválidos.")
-            continue
-        
-        linha, coluna, digito = map(int, resposta)
-        linha -= 1                
-        coluna -= 1
-        
-        if (linha, coluna) in celulas_imutaveis:
-            print("Essa célula já foi preenchida.")
-            continue
-        
-        return linha, coluna, digito
-    
-def jogar(board, dificuldade):
-    celulas_imutaveis = gerar_puzzle(board, dificuldade)
-    exibir_board(board)
-    while True:
-        linha, coluna, digito = obter_jogada(celulas_imutaveis)
-        if jogada_valida(board, linha, coluna, digito):
-            board[linha][coluna] = digito
-            exibir_board(board)
-            if not any(0 in row for row in board):
-                print("Parabéns! Você completou o Sudoku!")
-                return
-        else:
-            print("Jogada inválida. Tente novamente.")
-        
-board = criar_board()
-dificuldade = input("Escolha a dificuldade (facil, medio, dificil): ").lower()
-while dificuldade not in dificuldades:
-    print("Dificuldade inválida. Tente novamente.")
-    dificuldade = input("Escolha a dificuldade (facil, medio, dificil): ").lower()
-jogar(board, dificuldade)

@@ -1,6 +1,7 @@
 
-from board import exibir_board, resolver
+from board import exibir_board, resolver, today
 from validator import jogada_valida
+import arquivo
 import random
 
 dificuldades = {
@@ -48,12 +49,18 @@ def obter_jogada(celulas_imutaveis):
         return linha, coluna, digito
     
 def jogar(board, dificuldade):
-    celulas_imutaveis = gerar_puzzle(board, dificuldade)
+    save = arquivo.carregar(today)
+    if save[0] is not None:
+        board, celulas_imutaveis, date = save
+        print(f"Carregando save do dia {date}.")
+    else:
+        celulas_imutaveis = gerar_puzzle(board, dificuldade)
     exibir_board(board)
     while True:
         linha, coluna, digito = obter_jogada(celulas_imutaveis)
         if jogada_valida(board, linha, coluna, digito):
             board[linha][coluna] = digito
+            arquivo.salvar(board, today, celulas_imutaveis)
             exibir_board(board)
             if not any(0 in row for row in board):
                 print("Parabéns! Você completou o Sudoku!")
